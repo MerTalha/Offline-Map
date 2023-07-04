@@ -99,47 +99,6 @@ public class MainActivity extends AppCompatActivity implements MapListener, MapE
         mapView.getOverlays().add(marker);
         mapView.invalidate();
 
-        /*markerButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                isMark = b;
-            }
-        });
-
-        mapView.setOnTouchListener(new View.OnTouchListener() {
-            @SuppressLint("ClickableViewAccessibility")
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (isMark){
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        // Dokunulan noktanın koordinatlarını al
-                        GeoPoint touchedPoint = (GeoPoint) mapView.getProjection().fromPixels((int) event.getX(), (int) event.getY());
-
-                        // Marker oluştur ve ayarla
-                        Marker marker = new Marker(mapView);
-                        marker.setPosition(touchedPoint);
-                        marker.setIcon(getResources().getDrawable(R.drawable.bonuspack_bubble));
-                        marker.setTitle("Touched Location");
-                        marker.showInfoWindow();
-
-                        // Marker'ı haritaya ekle
-                        mapView.getOverlays().add(marker);
-                        mapView.invalidate();
-
-                        return true;
-                    }
-
-                    else {
-                        return true;
-                    }
-
-                }
-
-                return isMark;
-            }
-
-        });*/
-
         mapView.setOnTouchListener(new View.OnTouchListener() {
             private GestureDetector gestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
                 @Override
@@ -183,16 +142,6 @@ public class MainActivity extends AppCompatActivity implements MapListener, MapE
                 return true;
             }
         });
-
-
-
-
-
-
-
-
-
-
 
         //on durumunda hem marker koyuyor hem de hareket ediyor. off durumund sadece hareket ediyor
         /*markerButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
@@ -286,43 +235,6 @@ public class MainActivity extends AppCompatActivity implements MapListener, MapE
                 });
             }
         });*/
-
-
-        //koordinata dönüştürme kodu. çalışmadı
-        /*markerButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (isChecked) {
-        mapView.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == 1) {
-                    final GeoPoint p = (GeoPoint) mapView.getProjection().fromPixels(
-                            (int) event.getX(), (int) event.getY());
-                    final StringBuilder msg = new StringBuilder();
-                    new Thread(new Runnable() {
-                        public void run() {
-                            final double lon = p.getLongitudeE6() / 1E6;
-                            final double lat = p.getLatitudeE6() / 1E6;
-                            final double alt = getAltitude((float) lon, (float) lat);
-                            msg.append("Lon: ");
-                            msg.append(lon);
-                            msg.append(" Lat: ");
-                            msg.append(lat);
-                            msg.append(" Alt: ");
-                            msg.append(alt);
-                        }
-                    }).run();
-                    Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT)
-                            .show();
-
-                }
-                return false;
-            }
-                });
-            } else {
-                // Toggle düğmesi kapalı durumdayken haritada gezinme sağlanmalı
-                mapView.setOnTouchListener(null);
-            }
-        });*/
-
 
     }
 
