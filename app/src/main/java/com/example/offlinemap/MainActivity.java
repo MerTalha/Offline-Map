@@ -100,6 +100,9 @@ public class MainActivity extends AppCompatActivity implements MapListener, MapE
         mapView.invalidate();
 
         mapView.setOnTouchListener(new View.OnTouchListener() {
+
+
+
             private GestureDetector gestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public void onLongPress(MotionEvent e) {
@@ -118,8 +121,7 @@ public class MainActivity extends AppCompatActivity implements MapListener, MapE
                     mapView.getOverlays().add(marker);
                     mapView.invalidate();
 
-                    mapView.getOverlays().add(marker);
-                    mapView.invalidate();
+
                     final StringBuilder msg = new StringBuilder();
                     final double lon = (touchedPoint.getLongitude() / 1E6) * 1000000;
                     final double lat = (touchedPoint.getLatitude() / 1E6) * 1000000;
@@ -134,13 +136,15 @@ public class MainActivity extends AppCompatActivity implements MapListener, MapE
 
                     // Koordinatları kullanmak için burada yapılacak işlemleri gerçekleştirin
                 }
-            });
 
+            });
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                gestureDetector.onTouchEvent(event);
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                gestureDetector.onTouchEvent(motionEvent);
                 return true;
             }
+
+
         });
 
         //on durumunda hem marker koyuyor hem de hareket ediyor. off durumund sadece hareket ediyor
