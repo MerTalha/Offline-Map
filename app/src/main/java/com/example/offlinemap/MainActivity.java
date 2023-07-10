@@ -6,11 +6,13 @@ import static android.hardware.SensorManager.getAltitude;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
 
 import java.util.ArrayList;
 
@@ -36,6 +39,7 @@ import com.example.offlinemap.databinding.ActivityMainBinding;
 
 
 import java.util.Arrays;
+import java.util.List;
 
 import egolabsapps.basicodemine.offlinemap.Interfaces.MapListener;
 import egolabsapps.basicodemine.offlinemap.Utils.MapUtils;
@@ -65,14 +69,9 @@ public class MainActivity extends AppCompatActivity implements MapListener, MapE
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
         offlineMapView = findViewById(R.id.map);
+
         offlineMapView.init(this, this);
 
-        ActivityCompat.requestPermissions( this,
-                new String[]{
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.MANAGE_EXTERNAL_STORAGE
-                }, 1
-        );
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()){
@@ -85,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements MapListener, MapE
                 startActivity(intent);
             }
         }
+
+
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -100,9 +102,60 @@ public class MainActivity extends AppCompatActivity implements MapListener, MapE
         mapView.invalidate();
 
         mapView.setOnTouchListener(new View.OnTouchListener() {
+            private GestureDetector gestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    // Uzun dokunma işlemi gerçekleştiğinde yapılacak işlemleri buraya yazın
+                    // ...
+
+                    // Dokunulan noktanın koordinatlarını al
+                    GeoPoint touchedPoint = (GeoPoint) mapView.getProjection().fromPixels((int) e.getX(), (int) e.getY());
+
+                    // Marker oluştur ve ayarla
+                    Marker marker = new Marker(mapView);
+                    marker.setPosition(touchedPoint);
+                    marker.setTitle("Touched Location");
+                    marker.showInfoWindow();
+
+                    // Marker'ı haritaya ekle
+                    List<Overlay> overlays = mapView.getOverlays();
+                    overlays.clear(); // Eski markerları temizle
+                    overlays.add(marker);
+
+                    mapView.invalidate();
+
+                    // Koordinatları kullanmak için burada yapılacak işlemleri gerçekleştirin
+                }
+
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent e) {
+                    // Tek dokunma işlemi gerçekleştiğinde yapılacak işlemleri buraya yazın
+                    // ...
+
+                    // Dokunmanın tüketilmediğini ve geri dönmesi gerektiğini belirtin
+                    return false;
+                }
+            });
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                // Dokunma olayını GestureDetector'a yönlendirin
+                boolean gestureResult = gestureDetector.onTouchEvent(motionEvent);
+
+                // Dokunmanın tüketilmediğini ve geri dönmesi gerektiğini belirtin
+                return gestureResult;
+            }
+        });
 
 
 
+
+
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////
+        /*mapView.setOnTouchListener(new View.OnTouchListener() {
             private GestureDetector gestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public void onLongPress(MotionEvent e) {
@@ -145,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements MapListener, MapE
             }
 
 
-        });
+        });*/
 
         //on durumunda hem marker koyuyor hem de hareket ediyor. off durumund sadece hareket ediyor
         /*markerButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
@@ -262,6 +315,7 @@ public class MainActivity extends AppCompatActivity implements MapListener, MapE
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
+
     }
 
     @Override
